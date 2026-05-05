@@ -1,7 +1,5 @@
 import "../styles/chatRoom.css";
-import { io } from "socket.io-client";
-
-const socket = io();
+import socket from "../socket";
 
 const form = document.getElementById("form");
 const input = document.getElementById("input");
