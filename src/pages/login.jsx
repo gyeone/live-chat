@@ -1,6 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 function Login() {
     const [nickname, setNickname] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        navigate("/chatList");
+    };
+
     return (
         <section className="login">
             <h2>닉네임을 입력해주세요</h2>
