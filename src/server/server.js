@@ -57,6 +57,9 @@ io.on("connection", async (socket) => {
         }
     });
 
+    //현재 접속자 수
+    const count = io.sockets.sockets.size;
+    io.emit("current users count", count);
     });
 
     socket.on("disconnect", () => {
