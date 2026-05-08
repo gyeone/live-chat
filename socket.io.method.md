@@ -53,4 +53,4 @@
 7. 서버 정보 조회
 
 - io.sockets.sockets 접속한 전체 소켓 목록
-- io.engine.clientsCount 현재 접속자 수
+- io.sockets.sockets.size 현재 접속자 수

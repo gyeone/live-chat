@@ -1,20 +1,38 @@
 import express from "express";
+import pg from "pg";
+import cors from "cors";
 import { createServer } from "node:http";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 
 const app = express();
+const port = process.env.PORT || 3000;
+const { Pool } = pg;
+const db = new Pool({
+    host: "127.0.0.1",
+    user: "postgres",
+    password: "0522",
+    database: "baekChat",
+    port: 5432,
+});
+
 const server = createServer(app);
 const io = new Server(server, {
     connectionStateRecovery: {},
+    cors: {
+        origin: "http://localhost:5173",
+        credentials: true,
+        optionsSuccessStatus: 200,
+    },
 });
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+        optionsSuccessStatus: 200,
+    }),
+);
 
-app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "index.html"));
-});
 
 io.on("connection", (socket) => {
     socket.on("chat message", (msg) => {
@@ -24,4 +42,6 @@ io.on("connection", (socket) => {
     socket.on("welcome", (socket) => {
         socket.emit();
     });
+server.listen(port, () => {
+    console.log(`서버 실행 중: http://localhost:${port}`);
 });
