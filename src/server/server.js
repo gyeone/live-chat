@@ -33,15 +33,36 @@ app.use(
     }),
 );
 
+io.on("connection", async (socket) => {
+    console.log("클라이언트 연결됨");
+    // 닉네임 저장
+    socket.on("nickname", async (nickname) => {
+        try {
+            const result = await db.query(
+                "SELECT * FROM users WHERE nickname = $1",
+                [nickname],
+            );
 
-io.on("connection", (socket) => {
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
+            console.log("저장 전", result.rows);
+
+            if (result.rows.length === 0) {
+                await db.query("INSERT INTO users (nickname) VALUES ($1)", [
+                    nickname,
+                ]);
+            }
+
+            io.emit("welcome", nickname);
+        } catch (e) {
+            console.log("닉네임 저장 실패", e.message);
+        }
     });
 
-    socket.on("welcome", (socket) => {
-        socket.emit();
     });
+
+    socket.on("disconnect", () => {
+        console.log("클라이언트 연결 끊김");
+    });
+});
 server.listen(port, () => {
     console.log(`서버 실행 중: http://localhost:${port}`);
 });

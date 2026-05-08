@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import socket from "../socket";
+
 function Login() {
     const [nickname, setNickname] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        socket.emit("nickname", nickname);
 
         navigate("/chatList");
     };
