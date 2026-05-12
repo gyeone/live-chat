@@ -43,15 +43,11 @@ io.on("connection", async (socket) => {
                 [nickname],
             );
 
-            if (result.rows.length > 0) {
-                return socket.emit(
-                    "nickname error",
-                    `이미 존재하는 닉네임입니다\n다른 이름을 입력해주세요`,
-                );
+            if (result.rows.length === 0) {
+                await db.query("INSERT INTO users (nickname) VALUES ($1)", [
+                    nickname,
+                ]);
             }
-            await db.query("INSERT INTO users (nickname) VALUES ($1)", [
-                nickname,
-            ]);
 
             io.emit("welcome", nickname);
         } catch (e) {

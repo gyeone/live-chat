@@ -1,20 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 
 function Login() {
     const [nickname, setNickname] = useState("");
     const navigate = useNavigate();
-
-    useEffect(() => {
-        socket.on("nickname error", (msg) => {
-            alert(msg);
-        });
-
-        return () => {
-            socket.off("nickname error");
-        };
-    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
