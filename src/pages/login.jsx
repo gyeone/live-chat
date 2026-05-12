@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 
@@ -6,12 +6,23 @@ function Login() {
     const [nickname, setNickname] = useState("");
     const navigate = useNavigate();
 
+    useEffect(() => {
+        sockekt.on("nickname error", (msg) => {
+            alert(msg);
+        });
+
+        return () => {
+            socket.off("nickname error");
+        };
+    }, []);
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        socket.emit("nickname", nickname);
-
-        navigate("/chatList");
+        if (nickname) {
+            socket.emit("nickname", nickname);
+            navigate("/chatList");
+        }
     };
 
     return (
@@ -22,9 +33,9 @@ function Login() {
                     id="nickname"
                     type="text"
                     value={nickname}
-                    maxLength={10}
+                    maxLength={20}
                     onChange={(e) => setNickname(e.target.value.trim())}
-                    placeholder="10자 이내의 닉네임을 입력하세요"
+                    placeholder="20자 이내의 닉네임을 입력하세요"
                 />
                 <button type="reset">x</button>
                 <button>입장</button>

@@ -39,17 +39,19 @@ io.on("connection", async (socket) => {
     socket.on("nickname", async (nickname) => {
         try {
             const result = await db.query(
-                "SELECT * FROM users WHERE nickname = $1",
+                "SELECT nickname FROM users WHERE nickname = $1",
                 [nickname],
             );
 
-            console.log("저장 전", result.rows);
-
-            if (result.rows.length === 0) {
-                await db.query("INSERT INTO users (nickname) VALUES ($1)", [
-                    nickname,
-                ]);
+            if (result.rows.length > 0) {
+                return socket.emit(
+                    "nickname error",
+                    `이미 존재하는 닉네임입니다\n다른 이름을 입력해주세요`,
+                );
             }
+            await db.query("INSERT INTO users (nickname) VALUES ($1)", [
+                nickname,
+            ]);
 
             io.emit("welcome", nickname);
         } catch (e) {
