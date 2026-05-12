@@ -7,7 +7,7 @@ function Login() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        sockekt.on("nickname error", (msg) => {
+        socket.on("nickname error", (msg) => {
             alert(msg);
         });
 
