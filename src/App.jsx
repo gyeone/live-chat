@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
-import ChatRoom from "./components/chatRoom";
+import ChatRoom from "./pages/chatRoom";
 import ChatList from "./pages/chatList";
 
 function App() {
