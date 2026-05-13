@@ -8,11 +8,12 @@ function ChatList() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const nickname = socket.nickname || sessionStorage.getItem("nickname");
+        const nickname = sessionStorage.getItem("nickname");
         SetNickname(nickname);
 
         if (!nickname) {
             navigate("/");
+            return;
         }
 
         socket.on("current users count", (count) => {

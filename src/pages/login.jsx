@@ -8,9 +8,8 @@ function Login() {
 
     useEffect(() => {
         socket.on("welcome", (nickname) => {
-            socket.nickname = nickname;
             sessionStorage.setItem("nickname", nickname);
-            navigate("/chatList", nickname);
+            navigate("/chatList");
         });
 
         return () => {

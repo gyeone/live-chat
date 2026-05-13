@@ -9,5 +9,6 @@ import { useEffect } from "react";
 
         if (!nickname) {
             navigate("/");
+            return;
         }
     }, []);
