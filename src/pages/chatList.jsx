@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import socket from "../socket";
+import { useNavigate } from "react-router-dom";
 
 function ChatList() {
     const [nickname, SetNickname] = useState("");
     const [count, setCount] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const nickname = socket.nickname || sessionStorage.getItem("nickname");
         SetNickname(nickname);
+
+        if (!nickname) {
+            navigate("/");
+        }
 
         socket.on("current users count", (count) => {
             setCount(count);
