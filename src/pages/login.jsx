@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 
@@ -6,12 +6,23 @@ function Login() {
     const [nickname, setNickname] = useState("");
     const navigate = useNavigate();
 
+    useEffect(() => {
+        socket.on("welcome", (nickname) => {
+            socket.nickname = nickname;
+            sessionStorage.setItem("nickname", nickname);
+            navigate("/chatList", nickname);
+        });
+
+        return () => {
+            socket.off("welcome");
+        };
+    }, []);
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (nickname) {
             socket.emit("nickname", nickname);
-            navigate("/chatList");
         }
     };
 

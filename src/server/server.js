@@ -49,7 +49,7 @@ io.on("connection", async (socket) => {
                 ]);
             }
 
-            io.emit("welcome", nickname);
+            socket.emit("welcome", nickname);
         } catch (e) {
             console.log("닉네임 저장 실패", e.message);
         }
