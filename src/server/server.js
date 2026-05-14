@@ -116,7 +116,17 @@ io.on("connection", async (socket) => {
         }
     });
 
-    socket.on("disconnect", () => {
+    // 채팅방 입장
+    try {
+        socket.on("join", ({ roomName, nickname }) => {
+            socket.join(roomName);
+            socket
+                .to(roomName)
+                .emit("room join msg", `${nickname} 님이 입장하였습니다`);
+        });
+    } catch (e) {
+        console.log("채팅방 입장에 실패하였습니다");
+    }
         console.log("클라이언트 연결 끊김");
     });
 });

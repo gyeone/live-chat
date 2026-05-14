@@ -28,6 +28,13 @@ function ChatList() {
             socket.off("current users count");
         };
     }, []);
+
+    const handleChatRoom = (roomName) => {
+        socket.emit("join", { roomName, nickname });
+        navigate("/chatRoom", { state: roomName });
+        window.location.reload();
+    };
+
     return (
         <>
             <section id="chatList">
@@ -40,7 +47,13 @@ function ChatList() {
                     <div className="chatList-rooms">
                         <ul className="rooms">
                             {rooms.map((room, i) => (
-                                <li className="room" key={i}>
+                                <li
+                                    className="room"
+                                    key={i}
+                                    onClick={() =>
+                                        handleChatRoom(room.room_name)
+                                    }
+                                >
                                     <p>{room.room_name}</p>
                                     <p>
                                         {room.roomContent?.content
