@@ -18,3 +18,22 @@ import { useEffect } from "react";
             return;
         }
     }, []);
+
+    const toPrevPage = () => {
+        navigate("/chatList");
+        window.location.reload();
+    };
+    return (
+        <>
+            <section id="chatRoom">
+                <div className="chatRoom-header">
+                    <button type="button" onClick={toPrevPage}>
+                        이전
+                    </button>
+                </div>
+            </section>
+        </>
+    );
+}
+
+export default ChatRoom;
