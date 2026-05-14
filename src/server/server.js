@@ -83,6 +83,30 @@ io.on("connection", async (socket) => {
     } catch (e) {
         console.log("모든 채팅방 불러오기 실패", e.message);
     }
+
+    // 방 새로 만들기
+    socket.on("create room", async ({ roomName, nickname }) => {
+        try {
+            const result = await db.query(
+                "SELECT room_name FROM rooms WHERE room_name = $1",
+                [roomName],
+            );
+
+            if (result.rows.length > 0) {
+                return socket.emit(
+                    "create room error",
+                    "이미 존재하는 채팅방입니다 다른 이름을 입력해주세요",
+                );
+            }
+            await db.query(
+                "INSERT INTO rooms (room_name, created_by) VALUES ($1, $2)",
+                [roomName, nickname],
+            );
+
+            socket.emit("create room success");
+        } catch (e) {
+            console.log("방 만들기 실패", e.message);
+        }
     });
 
     socket.on("disconnect", () => {

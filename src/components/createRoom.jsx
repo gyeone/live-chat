@@ -1,5 +1,34 @@
 import { useEffect, useState } from "react";
+import socket from "../socket";
 function CreateRoom({ onClose }) {
+    const [roomName, setRoomName] = useState("");
+
+    useEffect(() => {
+        socket.on("create room error", (msg) => {
+            alert(msg);
+            setRoomName("");
+        });
+        socket.on("create room success", () => {
+            alert(`새로운 "${roomName}" 방이 생겼습니다`);
+            onClose();
+            window.location.reload();
+        });
+        return () => {
+            socket.off("create room error");
+            socket.off("create room success");
+        };
+    }, []);
+
+    const handleSubmit = (e) => {
+        const nickname = sessionStorage.getItem("nickname");
+
+        e.preventDefault();
+
+        if (roomName) {
+            socket.emit("create room", { roomName, nickname });
+        }
+    };
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>

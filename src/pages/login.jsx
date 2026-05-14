@@ -10,6 +10,7 @@ function Login() {
         socket.on("welcome", (nickname) => {
             sessionStorage.setItem("nickname", nickname);
             navigate("/chatList");
+            window.location.reload();
         });
 
         return () => {
