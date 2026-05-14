@@ -78,8 +78,9 @@ io.on("connection", async (socket) => {
                 };
             }),
         );
-
-        socket.emit("rooms content", roomsContent);
+        await setTimeout(() => {
+            socket.emit("rooms content", roomsContent);
+        }, 1000);
     } catch (e) {
         console.log("모든 채팅방 불러오기 실패", e.message);
     }
