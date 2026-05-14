@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function ChatList() {
     const [nickname, SetNickname] = useState("");
     const [count, setCount] = useState(0);
+    const [rooms, setRooms] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -36,6 +37,22 @@ function ChatList() {
                     <button type="button" onClick={() => setIsModalOpen(true)}>
                         + 방 만들기
                     </button>
+                    <div className="chatList-rooms">
+                        <ul className="rooms">
+                            {rooms.map((room, i) => (
+                                <li className="room" key={i}>
+                                    <p>{room.room_name}</p>
+                                    <p>
+                                        {room.roomContent?.content
+                                            ? room.roomContent.content
+                                            : "채팅 내용이 없습니다"}
+                                    </p>
+                                    <p>{room.roomContent?.created_at}</p>
+                                </li>
+                            ))}
+                            {rooms.length === 0 && <p>생성된 방이 없습니다.</p>}
+                        </ul>
+                    </div>
                 </div>
                 <ul></ul>
             </section>

@@ -58,6 +58,31 @@ io.on("connection", async (socket) => {
     //현재 접속자 수
     const count = io.sockets.sockets.size;
     io.emit("current users count", count);
+
+    // 생성된 각 채팅방과 해당 채팅방의 최신 메시지와 시간 가져오기
+    try {
+        const rooms = await db.query(
+            "SELECT * FROM rooms ORDER BY created_at DESC",
+        );
+
+        const roomsContent = await Promise.all(
+            rooms.rows.map(async (room) => {
+                const content = await db.query(
+                    "SELECT content, created_at FROM messages WHERE room_id = $1 ORDER BY created_at DESC LIMIT 1",
+                    [room.id],
+                );
+
+                return {
+                    ...room,
+                    roomContent: content.rows[0] || "",
+                };
+            }),
+        );
+
+        socket.emit("rooms content", roomsContent);
+    } catch (e) {
+        console.log("모든 채팅방 불러오기 실패", e.message);
+    }
     });
 
     socket.on("disconnect", () => {
