@@ -8,8 +8,9 @@ function CreateRoom({ onClose }) {
             alert(msg);
             setRoomName("");
         });
-        socket.on("create room success", () => {
-            alert(`새로운 "${roomName}" 방이 생겼습니다`);
+
+        socket.on("create room success", (msg) => {
+            alert(msg);
             onClose();
             window.location.reload();
         });
@@ -18,7 +19,6 @@ function CreateRoom({ onClose }) {
             socket.off("create room success");
         };
     }, []);
-
     const handleSubmit = (e) => {
         const nickname = sessionStorage.getItem("nickname");
 

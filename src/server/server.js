@@ -74,8 +74,8 @@ io.on("connection", async (socket) => {
         const roomsContent = await Promise.all(
             rooms.rows.map(async (room) => {
                 const content = await db.query(
-                    "SELECT content, created_at FROM messages WHERE room_id = $1 ORDER BY created_at DESC LIMIT 1",
-                    [room.id],
+                    "SELECT content, created_at FROM messages WHERE room_name = $1 ORDER BY created_at DESC LIMIT 1",
+                    [room.name],
                 );
 
                 return {
@@ -110,7 +110,10 @@ io.on("connection", async (socket) => {
                 [roomName, nickname],
             );
 
-            socket.emit("create room success");
+            socket.emit(
+                "create room success",
+                `새로운 "${roomName}" 방이 생겼습니다`,
+            );
         } catch (e) {
             console.log("방 만들기 실패", e.message);
         }
