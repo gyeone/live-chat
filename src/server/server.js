@@ -55,9 +55,15 @@ io.on("connection", async (socket) => {
         }
     });
 
-    //현재 접속자 수
-    const count = io.sockets.sockets.size;
-    io.emit("current users count", count);
+    //현재 접속자 수 불러오기
+    try {
+        await setTimeout(() => {
+            const count = io.engine.clientsCount;
+            socket.emit("current users count", count);
+        }, 1000);
+    } catch (e) {
+        console.log("현재 접속자 수 불러오기 실패", e.message);
+    }
 
     // 생성된 각 채팅방과 해당 채팅방의 최신 메시지와 시간 가져오기
     try {
