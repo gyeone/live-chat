@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function ChatList() {
     const [nickname, SetNickname] = useState("");
     const [count, setCount] = useState(0);
+    const [messages, setMessages] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -23,14 +24,19 @@ function ChatList() {
         socket.on("current users count", (count) => {
             setCount(count);
         });
+
+
+        socket.on("rooms content", (rooms) => {
+            setRooms(rooms);
+        });
+
         return () => {
-            socket.off("welcome");
             socket.off("current users count");
+            socket.off("rooms content");
         };
     }, []);
 
     const handleChatRoom = (roomName) => {
-        socket.emit("join", { roomName, nickname });
         navigate("/chatRoom", { state: roomName });
         window.location.reload();
     };
@@ -57,7 +63,7 @@ function ChatList() {
                                     <p>{room.room_name}</p>
                                     <p>
                                         {room.roomContent?.content
-                                            ? room.roomContent.content
+                                            ? room.roomContent?.content
                                             : "채팅 내용이 없습니다"}
                                     </p>
                                     <p>{room.roomContent?.created_at}</p>

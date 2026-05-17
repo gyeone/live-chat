@@ -74,8 +74,8 @@ io.on("connection", async (socket) => {
         const roomsContent = await Promise.all(
             rooms.rows.map(async (room) => {
                 const content = await db.query(
-                    "SELECT content, created_at FROM messages WHERE room_name = $1 ORDER BY created_at DESC LIMIT 1",
-                    [room.name],
+                    "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at FROM messages WHERE room_name = $1 ORDER BY created_at DESC LIMIT 1",
+                    [room.room_name],
                 );
 
                 return {

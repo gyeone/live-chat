@@ -43,7 +43,6 @@ function ChatRoom() {
         });
 
         return () => {
-            socket.off("join");
             socket.emit("leave", { roomName: state, nickname: nickname });
             socket.off("room join msg");
             socket.off("room leave msg");
