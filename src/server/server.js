@@ -154,6 +154,20 @@ io.on("connection", async (socket) => {
     } catch (e) {
         console.log("이전 메시지 불러오기 실패", e.message);
     }
+
+    // 입력한 메시지 저장
+    socket.on("chat message", async ({ inputMsg, roomName, nickname }) => {
+        try {
+            const result = await db.query(
+                "INSERT INTO messages (content, room_name, user_name) VALUES ($1, $2, $3) RETURNING content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at",
+                [inputMsg, roomName, nickname],
+            );
+
+            io.to(roomName).emit("chat message", result.rows[0]);
+        } catch (e) {
+            console.log("메시지 저장 실패", e.message);
+        }
+    });
         console.log("클라이언트 연결 끊김");
     });
 });

@@ -37,12 +37,18 @@ function ChatRoom() {
         socket.on("prev messages", (rows) => {
             setMessages(rows);
         });
+
+        socket.on("chat message", (msg) => {
+            setMessages((prev) => [...prev, msg]);
+        });
+
         return () => {
             socket.off("join");
             socket.emit("leave", { roomName: state, nickname: nickname });
             socket.off("room join msg");
             socket.off("room leave msg");
             socket.off("prev messages");
+            socket.off("chat message");
         };
     }, [state]);
 
@@ -55,7 +61,11 @@ function ChatRoom() {
         e.preventDefault();
 
         if (inputMsg) {
-            socket.emit("chat message", { inputMsg, roomName, nickname });
+            socket.emit("chat message", {
+                inputMsg: inputMsg,
+                roomName: state,
+                nickname: nickname,
+            });
             setInputMsg("");
         }
     };
