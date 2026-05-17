@@ -123,9 +123,10 @@ io.on("connection", async (socket) => {
     try {
         socket.on("join", ({ roomName, nickname }) => {
             socket.join(roomName);
-            socket
-                .to(roomName)
-                .emit("room join msg", `${nickname} 님이 입장하였습니다`);
+            io.to(roomName).emit(
+                "room join msg",
+                `${nickname} 님이 입장하였습니다`,
+            );
         });
     } catch (e) {
         console.log("채팅방 입장에 실패하였습니다");

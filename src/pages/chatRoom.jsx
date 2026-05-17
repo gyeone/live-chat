@@ -5,8 +5,9 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 function ChatRoom() {
-    const [nickname, SetNickname] = useState("");
+    const [nickname, setNickname] = useState("");
     const [inputMsg, setInputMsg] = useState("");
+    const [allalert, setAllAlert] = useState("");
     const [roomName, setRoomName] = useState("");
 
     const navigate = useNavigate();
@@ -14,19 +15,30 @@ function ChatRoom() {
 
     useEffect(() => {
         const nickname = sessionStorage.getItem("nickname");
-        SetNickname(nickname);
+        setNickname(nickname);
         setRoomName(state);
 
         if (!nickname) {
             navigate("/");
             return;
         }
-    }, []);
+
+        socket.emit("join", { roomName: state, nickname: nickname });
+
+        socket.on("room join msg", (msg) => {
+            setAllAlert(msg);
+        });
+        return () => {
+            socket.off("join");
+            socket.off("room join msg");
+        };
+    }, [state]);
 
     const toPrevPage = () => {
         navigate("/chatList");
         window.location.reload();
     };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -45,6 +57,7 @@ function ChatRoom() {
                     </button>
                     <h2>{roomName}</h2>
                 </div>
+                <p id="room-alert">{allalert}</p>
                 <form id="inputMsg-form" onSubmit={handleSubmit}>
                     <input
                         id="input"
