@@ -143,6 +143,17 @@ io.on("connection", async (socket) => {
     } catch (e) {
         console.log("채팅방 퇴장에 실패하였습니다");
     }
+
+    // 이전 메세지 불러오기
+    try {
+        const result = await db.query(
+            "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at FROM messages ORDER BY created_at ASC",
+        );
+
+        socket.emit("prev messages", result.rows);
+    } catch (e) {
+        console.log("이전 메시지 불러오기 실패", e.message);
+    }
         console.log("클라이언트 연결 끊김");
     });
 });

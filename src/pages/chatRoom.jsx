@@ -7,6 +7,7 @@ import { useEffect } from "react";
 function ChatRoom() {
     const [nickname, setNickname] = useState("");
     const [inputMsg, setInputMsg] = useState("");
+    const [messages, setMessages] = useState([]);
     const [allalert, setAllAlert] = useState("");
     const [roomName, setRoomName] = useState("");
 
@@ -32,11 +33,16 @@ function ChatRoom() {
         socket.on("room leave msg", (msg) => {
             setAllAlert(msg);
         });
+
+        socket.on("prev messages", (rows) => {
+            setMessages(rows);
+        });
         return () => {
             socket.off("join");
             socket.emit("leave", { roomName: state, nickname: nickname });
             socket.off("room join msg");
             socket.off("room leave msg");
+            socket.off("prev messages");
         };
     }, [state]);
 
@@ -64,6 +70,13 @@ function ChatRoom() {
                     <h2>{roomName}</h2>
                 </div>
                 <p id="room-alert">{allalert}</p>
+                <ul id="messages">
+                    {messages.map((msg, i) => (
+                        <li key={i}>
+                            {msg.content} <span>{msg.created_at}</span>
+                        </li>
+                    ))}
+                </ul>
                 <form id="inputMsg-form" onSubmit={handleSubmit}>
                     <input
                         id="input"
