@@ -131,6 +131,18 @@ io.on("connection", async (socket) => {
     } catch (e) {
         console.log("채팅방 입장에 실패하였습니다");
     }
+
+    // 채팅방 퇴장
+    try {
+        socket.on("leave", ({ roomName, nickname }) => {
+            io.to(roomName).emit(
+                "room leave msg",
+                `${nickname} 님이 퇴장하였습니다`,
+            );
+        });
+    } catch (e) {
+        console.log("채팅방 퇴장에 실패하였습니다");
+    }
         console.log("클라이언트 연결 끊김");
     });
 });

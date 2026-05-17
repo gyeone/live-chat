@@ -28,9 +28,15 @@ function ChatRoom() {
         socket.on("room join msg", (msg) => {
             setAllAlert(msg);
         });
+
+        socket.on("room leave msg", (msg) => {
+            setAllAlert(msg);
+        });
         return () => {
             socket.off("join");
+            socket.emit("leave", { roomName: state, nickname: nickname });
             socket.off("room join msg");
+            socket.off("room leave msg");
         };
     }, [state]);
 
