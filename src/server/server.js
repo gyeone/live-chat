@@ -17,6 +17,8 @@ const db = new Pool({
 
 const server = createServer(app);
 const io = new Server(server, {
+    pingInterval: 10000,
+    pingTimeout: 5000,
     connectionStateRecovery: {},
     cors: {
         origin: "http://localhost:5173",
@@ -34,8 +36,9 @@ app.use(
 );
 
 io.on("connection", async (socket) => {
+    // let socketNickname = socket.nickname;
     console.log("클라이언트 연결됨");
-    // 닉네임 저장
+    // 닉네임 저장과 온라인 상태로 변경 후 닉네임 내보내기
     socket.on("nickname", async (nickname) => {
         try {
             const result = await db.query(
@@ -49,9 +52,17 @@ io.on("connection", async (socket) => {
                 ]);
             }
 
-            socket.emit("welcome", nickname);
+            await db.query(
+                "UPDATE users SET is_online = true WHERE nickname = $1",
+                [nickname],
+            );
+
+            // socketNickname = await nickname;
+            // console.log("연결된 닉네임", socketNickname);
+
+            io.emit("welcome", nickname);
         } catch (e) {
-            console.log("닉네임 저장 실패", e.message);
+            console.log("닉네임 저장 또는 온라인 상태로 변경 실패", e.message);
         }
     });
 
@@ -59,10 +70,23 @@ io.on("connection", async (socket) => {
     try {
         await setTimeout(() => {
             const count = io.engine.clientsCount;
-            socket.emit("current users count", count);
+            io.emit("current users count", count);
         }, 1000);
     } catch (e) {
         console.log("현재 접속자 수 불러오기 실패", e.message);
+    }
+
+    // 현재 접속자 목록 불러오기
+    try {
+        const result = await db.query(
+            "SELECT nickname FROM users WHERE is_online = true",
+        );
+
+        await setTimeout(() => {
+            io.emit("current users", result.rows);
+        }, 1000);
+    } catch (e) {
+        console.log("현재 접속자 불러오기 실패", e.message);
     }
 
     // 생성된 각 채팅방과 해당 채팅방의 최신 메시지와 시간 가져오기
@@ -85,7 +109,7 @@ io.on("connection", async (socket) => {
             }),
         );
         await setTimeout(() => {
-            socket.emit("rooms content", roomsContent);
+            io.emit("rooms content", roomsContent);
         }, 1000);
     } catch (e) {
         console.log("모든 채팅방 불러오기 실패", e.message);

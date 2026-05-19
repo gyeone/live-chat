@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function ChatList() {
     const [nickname, SetNickname] = useState("");
     const [count, setCount] = useState(0);
+    const [userList, setUserList] = useState([]);
     const [messages, setMessages] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,10 +22,13 @@ function ChatList() {
             return;
         }
 
+        socket.on("current users", (userList) => {
+            setUserList(userList);
+        });
+
         socket.on("current users count", (count) => {
             setCount(count);
         });
-
 
         socket.on("rooms content", (rooms) => {
             setRooms(rooms);
@@ -32,6 +36,7 @@ function ChatList() {
 
         return () => {
             socket.off("current users count");
+            socket.off("current users");
             socket.off("rooms content");
         };
     }, []);
@@ -47,6 +52,13 @@ function ChatList() {
                 <div className="chatList-header">
                     <h2>{nickname}님 반갑습니다!</h2>
                     <h2>현재 접속자 수 {count}명</h2>
+                    <h2>현재 접속자</h2>
+                    <ul>
+                        {userList &&
+                            userList.map((user, i) => (
+                                <li key={i}>{user.nickname}</li>
+                            ))}
+                    </ul>
                     <button type="button" onClick={() => setIsModalOpen(true)}>
                         + 방 만들기
                     </button>
