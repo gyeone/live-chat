@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import socket from "../socket";
+import "../styles/createRoom.css";
+
 function CreateRoom({ onClose }) {
     const [roomName, setRoomName] = useState("");
 
