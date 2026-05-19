@@ -192,9 +192,31 @@ io.on("connection", async (socket) => {
             console.log("메시지 저장 실패", e.message);
         }
     });
+
+    socket.on("disconnect", async () => {
+        try {
+            await setTimeout(() => {
+                const count = io.engine.clientsCount;
+                io.emit("current users count", count);
+            }, 1000);
+        } catch (e) {
+            console.log("현재 접속자 수 불러오기 실패", e.message);
+        }
+
+        // try {
+        //     console.log("연결 끊긴 닉네임", socketNickname);
+        //     await db.query(
+        //         "UPDATE users SET is_online = false WHERE nickname = $1",
+        //         [socketNickname],
+        //     );
+        // } catch (e) {
+        //     console.log("오프라인 상태로 변경 실패", e.message);
+        // }
+
         console.log("클라이언트 연결 끊김");
     });
 });
+
 server.listen(port, () => {
     console.log(`서버 실행 중: http://localhost:${port}`);
 });

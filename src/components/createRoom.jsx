@@ -25,7 +25,10 @@ function CreateRoom({ onClose }) {
         e.preventDefault();
 
         if (roomName) {
-            socket.emit("create room", { roomName, nickname });
+            socket.emit("create room", {
+                roomName: roomName,
+                nickname: nickname,
+            });
         }
     };
 

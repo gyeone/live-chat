@@ -25,7 +25,6 @@ function Login() {
             socket.emit("nickname", nickname);
         }
     };
-
     return (
         <section className="login">
             <h2>닉네임을 입력해주세요</h2>
