@@ -70,6 +70,25 @@ io.on("connection", async (socket) => {
         }
     });
 
+    // 회원가입 - 닉네임과 비번 가입 여부 확인 후 저장
+    socket.on("signUp", async ({ nickname, password }) => {
+        try {
+            const result = await db.query(
+                "SELECT nickname FROM users WHERE nickname = $1",
+                [nickname],
+            );
+
+            await db.query("INSERT INTO users (nickname, pw) VALUES ($1, $2)", [
+                nickname,
+                password,
+            ]);
+
+            socket.emit("signUp success", "회원가입에 성공하였습니다");
+        } catch (e) {
+            console.log("닉네임과 비번 가입 여부 확인 후 저장 실패", e.message);
+        }
+    });
+
     //현재 접속자 수 불러오기
     try {
         await setTimeout(() => {

@@ -1,5 +1,10 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import socket from "../socket";
+
 function SignUp() {
+    const [nickname, setNickname] = useState("");
+    const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -8,6 +13,8 @@ function SignUp() {
             alert("아이디와 비밀번호를 모두 입력해주세요.");
             return;
         }
+
+        socket.emit("signUp", { nickname: nickname, password: password });
     };
 
     return (
