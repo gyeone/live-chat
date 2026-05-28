@@ -14,8 +14,21 @@ function Login() {
             window.location.reload();
         });
 
+        socket.on("login id fail", (msg) => {
+            alert(msg);
+            setNickname("");
+            setPassword("");
+        });
+
+        socket.on("login pw fail", (msg) => {
+            alert(msg);
+            setPassword("");
+        });
+
         return () => {
             socket.off("welcome");
+            socket.off("login id fail");
+            socket.off("login pw fail");
         };
     }, []);
 

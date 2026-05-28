@@ -48,6 +48,15 @@ io.on("connection", async (socket) => {
             const dbpw = await db.query("SELECT pw FROM users WHERE pw = $1", [
                 password,
             ]);
+
+            if (dbNickname.rows.length === 0) {
+                socket.emit("login id fail", "가입되지 않은 아이디입니다");
+                return;
+            }
+
+            if (dbNickname.rows.length > 0 && dbpw.rows.length === 0) {
+                socket.emit("login pw fail", "비밀번호가 일치하지 않습니다");
+                return;
             }
 
             await db.query(
