@@ -2,30 +2,26 @@ import "../styles/chatRoom.css";
 import socket from "../socket";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
-function ChatRoom() {
+function ChatRoom({ roomName }) {
     const [nickname, setNickname] = useState("");
     const [inputMsg, setInputMsg] = useState("");
     const [messages, setMessages] = useState([]);
     const [allalert, setAllAlert] = useState("");
-    const [roomName, setRoomName] = useState("");
 
     const navigate = useNavigate();
-    const { state } = useLocation();
 
     useEffect(() => {
         const nickname = sessionStorage.getItem("nickname");
         setNickname(nickname);
-        setRoomName(state);
 
         if (!nickname) {
             navigate("/");
             return;
         }
 
-        socket.emit("join", { roomName: state, nickname: nickname });
+        socket.emit("join", { roomName: roomName, nickname: nickname });
 
         socket.on("room join msg", (msg) => {
             setAllAlert(msg);
@@ -44,13 +40,13 @@ function ChatRoom() {
         });
 
         return () => {
-            socket.emit("leave", { roomName: state, nickname: nickname });
+            socket.emit("leave", { roomName: roomName, nickname: nickname });
             socket.off("room join msg");
             socket.off("room leave msg");
             socket.off("prev messages");
             socket.off("chat message");
         };
-    }, [state]);
+    }, [roomName]);
 
     const toPrevPage = () => {
         navigate("/chatList");
@@ -63,7 +59,7 @@ function ChatRoom() {
         if (inputMsg) {
             socket.emit("chat message", {
                 inputMsg: inputMsg,
-                roomName: state,
+                roomName: roomName,
                 nickname: nickname,
             });
             setInputMsg("");
