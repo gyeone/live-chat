@@ -40,6 +40,9 @@ function Login() {
                 <button type="reset">x</button>
                 <button>입장</button>
             </form>
+            <button type="button" onClick={() => navigate("/signUp")}>
+                회원가입
+            </button>
         </section>
     );
 }
