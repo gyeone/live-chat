@@ -136,6 +136,7 @@ io.on("connection", function (socket) {
    CREATE TABLE IF NOT EXISTS users (
    id SERIAL PRIMARY KEY,
    nickname VARCHAR(20) NOT NULL UNIQUE
+   pw VARCHAR(20) NOT NULL
    );
 
 2. rooms 테이블
