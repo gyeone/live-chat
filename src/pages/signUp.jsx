@@ -13,8 +13,15 @@ function SignUp() {
             setNickname("");
         });
 
+        socket.on("signUp success", (msg) => {
+            alert(msg);
+            navigate("/");
+            return;
+        });
+
         return () => {
             socket.off("signUp fail");
+            socket.off("signUp success");
         };
     }, []);
 
