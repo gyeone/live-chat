@@ -36,29 +36,24 @@ app.use(
 );
 
 io.on("connection", async (socket) => {
-    // let socketNickname = socket.nickname;
     console.log("클라이언트 연결됨");
-    // 닉네임 저장과 온라인 상태로 변경 후 닉네임 내보내기
-    socket.on("nickname", async (nickname) => {
+    // 로그인 - 닉네임과 비번 저장 후 온라인 상태로 변경
+    socket.on("nickname", async ({ nickname, password }) => {
         try {
-            const result = await db.query(
+            const dbNickname = await db.query(
                 "SELECT nickname FROM users WHERE nickname = $1",
                 [nickname],
             );
 
-            if (result.rows.length === 0) {
-                await db.query("INSERT INTO users (nickname) VALUES ($1)", [
-                    nickname,
-                ]);
+            const dbpw = await db.query("SELECT pw FROM users WHERE pw = $1", [
+                password,
+            ]);
             }
 
             await db.query(
                 "UPDATE users SET is_online = true WHERE nickname = $1",
                 [nickname],
             );
-
-            // socketNickname = await nickname;
-            // console.log("연결된 닉네임", socketNickname);
 
             io.emit("welcome", nickname);
         } catch (e) {

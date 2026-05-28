@@ -4,6 +4,7 @@ import socket from "../socket";
 
 function Login() {
     const [nickname, setNickname] = useState("");
+    const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,12 +22,12 @@ function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (nickname) {
-            socket.emit("nickname", nickname);
         if (!nickname || !password) {
             alert("아이디와 비밀번호를 모두 입력해주세요.");
             return;
         }
+
+        socket.emit("nickname", { nickname: nickname, password: password });
     };
     return (
         <section className="login">
@@ -40,7 +41,14 @@ function Login() {
                     onChange={(e) => setNickname(e.target.value.trim())}
                     placeholder="20자 이내의 닉네임을 입력하세요"
                 />
-                <button type="reset">x</button>
+                <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    maxLength={20}
+                    onChange={(e) => setPassword(e.target.value.trim())}
+                    placeholder="20자 이내의 비밀번호를 입력하세요"
+                />
                 <button>입장</button>
             </form>
             <button type="button" onClick={() => navigate("/signUp")}>
