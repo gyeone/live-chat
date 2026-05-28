@@ -6,6 +6,18 @@ function SignUp() {
     const [nickname, setNickname] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        socket.on("signUp fail", (msg) => {
+            alert(msg);
+            setNickname("");
+        });
+
+        return () => {
+            socket.off("signUp fail");
+        };
+    }, []);
+
     const handleSubmit = (e) => {
         e.preventDefault();
 

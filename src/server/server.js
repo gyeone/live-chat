@@ -78,6 +78,11 @@ io.on("connection", async (socket) => {
                 [nickname],
             );
 
+            if (result.rows.length > 0) {
+                socket.emit("signUp fail", "이미 존재하는 아이디입니다");
+                return;
+            }
+
             await db.query("INSERT INTO users (nickname, pw) VALUES ($1, $2)", [
                 nickname,
                 password,
