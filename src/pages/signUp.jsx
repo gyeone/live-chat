@@ -1,6 +1,15 @@
 import { useNavigate } from "react-router-dom";
 function SignUp() {
     const navigate = useNavigate();
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!nickname || !password) {
+            alert("아이디와 비밀번호를 모두 입력해주세요.");
+            return;
+        }
+    };
+
     return (
         <section className="signUp">
             <h2>회원가입</h2>
