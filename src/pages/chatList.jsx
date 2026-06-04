@@ -4,7 +4,7 @@ import CreateRoom from "../components/createRoom";
 import { useNavigate } from "react-router-dom";
 
 function ChatList() {
-    const [nickname, SetNickname] = useState("");
+    const [nickname, setNickname] = useState("");
     const [count, setCount] = useState(0);
     const [userList, setUserList] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -15,7 +15,7 @@ function ChatList() {
 
     useEffect(() => {
         const nickname = sessionStorage.getItem("nickname");
-        SetNickname(nickname);
+        setNickname(nickname);
 
         if (!nickname) {
             navigate("/");
@@ -51,6 +51,9 @@ function ChatList() {
             <section id="chatList">
                 <div className="chatList-header">
                     <h2>{nickname}님 반갑습니다!</h2>
+                    <button type="button" onClick={() => navigate("/myPage")}>
+                        마이페이지
+                    </button>
                     <h2>현재 접속자 수 {count}명</h2>
                     <h2>현재 접속자</h2>
                     <ul>
