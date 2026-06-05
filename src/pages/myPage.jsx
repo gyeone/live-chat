@@ -11,6 +11,11 @@ function MyPage() {
         setNickname(nickname);
     });
 
+        if (!nickname) {
+            navigate("/");
+            return;
+        }
+
     const toPrevPage = () => {
         navigate("/chatList");
         window.location.reload();
