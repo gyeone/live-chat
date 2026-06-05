@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-function ChatRoom({ roomName }) {
-    const [nickname, setNickname] = useState("");
+function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
     const [inputMsg, setInputMsg] = useState("");
     const [messages, setMessages] = useState([]);
     const [allalert, setAllAlert] = useState("");
@@ -13,14 +12,6 @@ function ChatRoom({ roomName }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const nickname = sessionStorage.getItem("nickname");
-        setNickname(nickname);
-
-        if (!nickname) {
-            navigate("/");
-            return;
-        }
-
         socket.emit("join", { roomName: roomName, nickname: nickname });
 
         socket.on("room join msg", (msg) => {
