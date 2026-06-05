@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import socket from "../socket";
 import CreateRoom from "../components/createRoom";
 import { useNavigate } from "react-router-dom";
+import ChatRoom from "../components/chatRoom";
 
 function ChatList() {
     const [nickname, setNickname] = useState("");
@@ -10,6 +11,8 @@ function ChatList() {
     const [messages, setMessages] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectRoom, setSelectRoom] = useState("");
+    const [isChatRoomOpen, setIsChatRoomOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -42,8 +45,8 @@ function ChatList() {
     }, []);
 
     const handleChatRoom = (roomName) => {
-        navigate("/chatRoom", { state: roomName });
-        window.location.reload();
+        setSelectRoom(roomName);
+        setIsChatRoomOpen(true);
     };
 
     return (
@@ -92,6 +95,13 @@ function ChatList() {
             </section>
             {isModalOpen && (
                 <CreateRoom onClose={() => setIsModalOpen(false)} />
+            )}
+            {selectRoom && isChatRoomOpen && (
+                <ChatRoom
+                    nickname={nickname}
+                    roomName={selectRoom}
+                    setIsChatRoomOpen={setIsChatRoomOpen}
+                />
             )}
         </>
     );
