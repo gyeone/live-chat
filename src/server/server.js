@@ -224,6 +224,23 @@ io.on("connection", async (socket) => {
         }
     });
 
+    // 기존 프로필 이미지 가져오기
+    socket.on("get profile img", async (nickname) => {
+        try {
+            const result = await db.query(
+                "SELECT profile_img FROM users WHERE nickname = $1",
+                [nickname],
+            );
+
+            if (result.rows.length > 0) {
+                setTimeout(() => {
+                    socket.emit("profile img", result.rows[0].profile_img);
+                }, 1000);
+            }
+        } catch (e) {
+            console.log("기존 프로필 이미지 가져오기 실패", e.message);
+        }
+    });
     socket.on("disconnect", async () => {
         try {
             await setTimeout(() => {

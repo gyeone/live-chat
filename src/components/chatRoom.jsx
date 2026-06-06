@@ -3,6 +3,7 @@ import socket from "../socket";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import defaultImg from "../assets/images/default_img.png";
 
 function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
     const [inputMsg, setInputMsg] = useState("");
@@ -71,7 +72,16 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
                 <ul id="messages">
                     {messages.map((msg, i) => (
                         <li key={i}>
-                            {msg.content} <span>{msg.created_at}</span>
+                            <img
+                                src={
+                                    msg.user_profile
+                                        ? `http://localhost:3000${msg.user_profile}`
+                                        : `${defaultImg}`
+                                }
+                                alt="채팅 작성자 프로필"
+                            />
+                            <p>{msg.content}</p>
+                            <span>{msg.created_at}</span>
                         </li>
                     ))}
                 </ul>
