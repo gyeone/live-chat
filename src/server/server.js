@@ -213,12 +213,22 @@ io.on("connection", async (socket) => {
     // 입력한 메시지 저장
     socket.on("chat message", async ({ inputMsg, roomName, nickname }) => {
         try {
-            const result = await db.query(
-                "INSERT INTO messages (content, room_name, user_name) VALUES ($1, $2, $3) RETURNING content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at",
-                [inputMsg, roomName, nickname],
+            const userProfile = await db.query(
+                "SELECT profile_img FROM users WHERE nickname = $1",
+                [nickname],
             );
 
-            io.to(roomName).emit("chat message", result.rows[0]);
+            const userProfileValue = userProfile.rows[0].profile_img;
+
+            const chatMsg = await db.query(
+                "INSERT INTO messages (content, room_name, user_name, user_profile) VALUES ($1, $2, $3, $4) RETURNING content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at, user_profile",
+                [inputMsg, roomName, nickname, userProfileValue],
+            );
+
+            setTimeout(() => {
+                console.log("유저 프로필", chatMsg.rows[0]);
+                io.to(roomName).emit("chat message", chatMsg.rows[0]);
+            }, 1000);
         } catch (e) {
             console.log("메시지 저장 실패", e.message);
         }
