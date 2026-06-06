@@ -41,9 +41,8 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
         };
     }, [roomName]);
 
-    const toPrevPage = () => {
-        navigate("/chatList");
-        window.location.reload();
+    const handleClose = () => {
+        setIsChatRoomOpen(false);
     };
 
     const handleSubmit = (e) => {
@@ -63,8 +62,8 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
         <>
             <section id="chatRoom">
                 <div className="chatRoom-header">
-                    <button type="button" onClick={toPrevPage}>
-                        이전
+                    <button type="button" onClick={handleClose}>
+                        닫기
                     </button>
                     <h2>{roomName}</h2>
                 </div>
