@@ -143,7 +143,7 @@ io.on("connection", async (socket) => {
     }
 
     // 방 새로 만들기
-    socket.on("create room", async ({ roomName, nickname }) => {
+    socket.on("create room", async ({ roomName, nickname, roomPw }) => {
         try {
             const result = await db.query(
                 "SELECT room_name FROM rooms WHERE room_name = $1",
@@ -157,8 +157,8 @@ io.on("connection", async (socket) => {
                 );
             }
             await db.query(
-                "INSERT INTO rooms (room_name, created_by) VALUES ($1, $2)",
-                [roomName, nickname],
+                "INSERT INTO rooms (room_name, created_by, pw) VALUES ($1, $2, $3)",
+                [roomName, nickname, roomPw],
             );
 
             socket.emit(

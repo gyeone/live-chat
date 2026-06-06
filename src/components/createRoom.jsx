@@ -33,6 +33,7 @@ function CreateRoom({ onClose }) {
             socket.emit("create room", {
                 roomName: roomName,
                 nickname: nickname,
+                roomPw: roomPw,
             });
         }
     };
