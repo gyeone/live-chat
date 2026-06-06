@@ -42,7 +42,7 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
     }, [roomName]);
 
     const handleClose = () => {
-        setIsChatRoomOpen(false);
+        setIsChatRoomOpen();
     };
 
     const handleSubmit = (e) => {

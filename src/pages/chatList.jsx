@@ -3,6 +3,7 @@ import socket from "../socket";
 import CreateRoom from "../components/createRoom";
 import { useNavigate } from "react-router-dom";
 import ChatRoom from "../components/chatRoom";
+import SecretRoomPw from "../components/secretRoomPw";
 
 function ChatList() {
     const [nickname, setNickname] = useState("");
@@ -13,6 +14,7 @@ function ChatList() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectRoom, setSelectRoom] = useState("");
     const [isChatRoomOpen, setIsChatRoomOpen] = useState(false);
+    const [isPwModalOpen, setIsPwModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -37,6 +39,13 @@ function ChatList() {
             setRooms(rooms);
         });
 
+        socket.on("is secret room", (isSecretRoom) => {
+            setIsPwModalOpen(isSecretRoom);
+            if (isSecretRoom === false) {
+                setIsChatRoomOpen(true);
+            }
+        });
+
         return () => {
             socket.off("current users count");
             socket.off("current users");
@@ -46,7 +55,7 @@ function ChatList() {
 
     const handleChatRoom = (roomName) => {
         setSelectRoom(roomName);
-        setIsChatRoomOpen(true);
+        socket.emit("is secret room", roomName);
     };
 
     return (
@@ -96,6 +105,11 @@ function ChatList() {
             {isCreateModalOpen && (
                 <CreateRoom onClose={() => setIsCreateModalOpen(false)} />
             )}
+            {selectRoom && isPwModalOpen && (
+                <SecretRoomPw
+                    onClose={() => setIsPwModalOpen(false)}
+                    setIsChatRoomOpen={() => setIsChatRoomOpen(true)}
+                />
             )}
             {selectRoom && isChatRoomOpen && (
                 <ChatRoom
