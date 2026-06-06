@@ -5,6 +5,7 @@ import "../styles/createRoom.css";
 function CreateRoom({ onClose }) {
     const [roomName, setRoomName] = useState("");
     const [isSecret, setIsSecret] = useState(false);
+    const [roomPw, setRoomPw] = useState("");
 
     useEffect(() => {
         socket.on("create room error", (msg) => {
@@ -22,6 +23,7 @@ function CreateRoom({ onClose }) {
             socket.off("create room success");
         };
     }, []);
+
     const handleSubmit = (e) => {
         const nickname = sessionStorage.getItem("nickname");
 
@@ -67,8 +69,11 @@ function CreateRoom({ onClose }) {
                     </label>
                     {isSecret && (
                         <input
+                            id="roomPw"
                             type="text"
                             maxLength={10}
+                            value={roomPw}
+                            onChange={(e) => setRoomPw(e.target.value.trim())}
                             placeholder="10자 이내의 비밀번호를 입력하세요"
                         />
                     )}
