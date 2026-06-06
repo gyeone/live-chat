@@ -51,6 +51,13 @@ function CreateRoom({ onClose }) {
                     <button type="button" onClick={onClose}>
                         닫기
                     </button>
+                    <input id="isScret" type="checkbox" />
+                    <label htmlFor="isScret">비밀방</label>
+                    <input
+                        type="text"
+                        maxLength={10}
+                        placeholder="10자 이내의 비밀번호를 입력하세요"
+                    />
                 </form>
             </div>
         </div>
