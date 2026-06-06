@@ -170,6 +170,26 @@ io.on("connection", async (socket) => {
         }
     });
 
+    // 비밀방 여부 확인
+    socket.on("is secret room", async (roomName) => {
+        try {
+            const result = await db.query(
+                "SELECT pw FROM rooms WHERE room_name = $1",
+                [roomName],
+            );
+            console.log(result.rows);
+
+            if (!result.rows[0].pw) {
+                socket.emit("is secret room", false);
+                return;
+            }
+
+            socket.emit("is secret room", true);
+        } catch (e) {
+            console.log("비밀방 여부 확인 실패", e.message);
+        }
+    });
+
     // 채팅방 입장
     socket.on("join", ({ roomName, nickname }) => {
         try {
