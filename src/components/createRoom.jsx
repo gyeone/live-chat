@@ -4,6 +4,7 @@ import "../styles/createRoom.css";
 
 function CreateRoom({ onClose }) {
     const [roomName, setRoomName] = useState("");
+    const [isSecret, setIsSecret] = useState(false);
 
     useEffect(() => {
         socket.on("create room error", (msg) => {
@@ -34,10 +35,17 @@ function CreateRoom({ onClose }) {
         }
     };
 
+    const handleIsSecret = () => {
+        isSecret ? setIsSecret(false) : setIsSecret(true);
+    };
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <h3>방 만들기</h3>
+                <button type="button" onClick={onClose}>
+                    닫기
+                </button>
                 <form id="roomName-form" onSubmit={handleSubmit}>
                     <input
                         id="roomName"
@@ -47,17 +55,24 @@ function CreateRoom({ onClose }) {
                         onChange={(e) => setRoomName(e.target.value.trim())}
                         placeholder="50자 이내의 방 이름을 입력하세요"
                     />
+
+                    <label htmlFor="isScret">
+                        <input
+                            id="isScret"
+                            type="checkbox"
+                            checked={isSecret}
+                            onChange={handleIsSecret}
+                        />
+                        비밀방
+                    </label>
+                    {isSecret && (
+                        <input
+                            type="text"
+                            maxLength={10}
+                            placeholder="10자 이내의 비밀번호를 입력하세요"
+                        />
+                    )}
                     <button>완료</button>
-                    <button type="button" onClick={onClose}>
-                        닫기
-                    </button>
-                    <input id="isScret" type="checkbox" />
-                    <label htmlFor="isScret">비밀방</label>
-                    <input
-                        type="text"
-                        maxLength={10}
-                        placeholder="10자 이내의 비밀번호를 입력하세요"
-                    />
                 </form>
             </div>
         </div>
