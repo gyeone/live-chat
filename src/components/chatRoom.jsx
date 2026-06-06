@@ -13,6 +13,7 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
 
     useEffect(() => {
         socket.emit("join", { roomName: roomName, nickname: nickname });
+        socket.emit("prev messages", roomName);
 
         socket.on("room join msg", (msg) => {
             setAllAlert(msg);

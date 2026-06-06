@@ -26,7 +26,6 @@ const io = new Server(server, {
         optionsSuccessStatus: 200,
     },
 });
-
 app.use(
     cors({
         origin: "http://localhost:5173",
@@ -96,7 +95,7 @@ io.on("connection", async (socket) => {
 
     //현재 접속자 수 불러오기
     try {
-        await setTimeout(() => {
+        setTimeout(() => {
             const count = io.engine.clientsCount;
             io.emit("current users count", count);
         }, 1000);
@@ -110,7 +109,7 @@ io.on("connection", async (socket) => {
             "SELECT nickname FROM users WHERE is_online = true",
         );
 
-        await setTimeout(() => {
+        setTimeout(() => {
             io.emit("current users", result.rows);
         }, 1000);
     } catch (e) {
@@ -136,7 +135,7 @@ io.on("connection", async (socket) => {
                 };
             }),
         );
-        await setTimeout(() => {
+        setTimeout(() => {
             io.emit("rooms content", roomsContent);
         }, 1000);
     } catch (e) {
@@ -172,40 +171,44 @@ io.on("connection", async (socket) => {
     });
 
     // 채팅방 입장
-    try {
-        socket.on("join", ({ roomName, nickname }) => {
+    socket.on("join", ({ roomName, nickname }) => {
+        try {
             socket.join(roomName);
             io.to(roomName).emit(
                 "room join msg",
                 `${nickname} 님이 입장하였습니다`,
             );
-        });
-    } catch (e) {
-        console.log("채팅방 입장에 실패하였습니다");
-    }
+        } catch (e) {
+            console.log("채팅방 입장에 실패하였습니다");
+        }
+    });
 
     // 채팅방 퇴장
-    try {
-        socket.on("leave", ({ roomName, nickname }) => {
+    socket.on("leave", ({ roomName, nickname }) => {
+        try {
             io.to(roomName).emit(
                 "room leave msg",
                 `${nickname} 님이 퇴장하였습니다`,
             );
-        });
-    } catch (e) {
-        console.log("채팅방 퇴장에 실패하였습니다");
-    }
+        } catch (e) {
+            console.log("채팅방 퇴장에 실패하였습니다");
+        }
+    });
 
     // 이전 메세지 불러오기
-    try {
-        const result = await db.query(
-            "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at FROM messages ORDER BY created_at ASC",
-        );
-
-        socket.emit("prev messages", result.rows);
-    } catch (e) {
-        console.log("이전 메시지 불러오기 실패", e.message);
-    }
+    socket.on("prev messages", async (roomName) => {
+        try {
+            const result = await db.query(
+                "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at, user_profile FROM messages WHERE room_name = $1 ORDER BY created_at ASC",
+                [roomName],
+            );
+            setTimeout(() => {
+                socket.emit("prev messages", result.rows);
+            }, 1200);
+        } catch (e) {
+            console.log("이전 메시지 불러오기 실패", e.message);
+        }
+    });
 
     // 입력한 메시지 저장
     socket.on("chat message", async ({ inputMsg, roomName, nickname }) => {
