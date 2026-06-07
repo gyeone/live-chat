@@ -90,12 +90,16 @@ function ChatList() {
                                 onClick={() => handleChatRoom(room.room_name)}
                             >
                                 <p>{room.room_name}</p>
-                                <p>
-                                    {room.roomContent?.content
-                                        ? room.roomContent?.content
-                                        : "채팅 내용이 없습니다"}
-                                </p>
-                                <p>{room.roomContent?.created_at}</p>
+                                {!room.pw && (
+                                    <div>
+                                        <p>
+                                            {room.roomContent?.content
+                                                ? room.roomContent?.content
+                                                : "채팅 내용이 없습니다"}
+                                        </p>
+                                        <p>{room.roomContent?.created_at}</p>
+                                    </div>
+                                )}
                             </li>
                         ))}
                         {rooms.length === 0 && <p>생성된 방이 없습니다.</p>}
