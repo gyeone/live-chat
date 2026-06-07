@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import socket from "../socket";
-import CreateRoom from "../components/createRoom";
+import CreateRoom from "./createRoom";
 import { useNavigate } from "react-router-dom";
-import ChatRoom from "../components/chatRoom";
-import SecretRoomPw from "../components/secretRoomPw";
+import ChatRoom from "./chatRoom";
+import SecretRoomPw from "./secretRoomPw";
 
 function ChatList() {
     const [nickname, setNickname] = useState("");
@@ -62,7 +62,6 @@ function ChatList() {
         <>
             <section id="chatList">
                 <div className="chatList-header">
-                    <h2>{nickname}님 반갑습니다!</h2>
                     <button type="button" onClick={() => navigate("/myPage")}>
                         마이페이지
                     </button>
