@@ -108,6 +108,7 @@ function ChatList() {
             {selectRoom && isPwModalOpen && (
                 <SecretRoomPw
                     onClose={() => setIsPwModalOpen(false)}
+                    roomName={selectRoom}
                     setIsChatRoomOpen={() => setIsChatRoomOpen(true)}
                 />
             )}

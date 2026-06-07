@@ -190,6 +190,28 @@ io.on("connection", async (socket) => {
         }
     });
 
+    // 비밀방 비밀번호 일치 여부 확인
+    socket.on("secret room", async ({ roomName, roomPw }) => {
+        try {
+            const result = await db.query(
+                "SELECT pw FROM rooms WHERE room_name = $1",
+                [roomName],
+            );
+
+            if (result.rows[0].pw !== roomPw) {
+                socket.emit(
+                    "secret room error",
+                    "비밀번호가 일치하지 않습니다",
+                );
+                return;
+            }
+
+            socket.emit("secret room success");
+        } catch (e) {
+            console.log("비밀방 비밀번호 확인 실패", e.message);
+        }
+    });
+
     // 채팅방 입장
     socket.on("join", ({ roomName, nickname }) => {
         try {
@@ -273,7 +295,7 @@ io.on("connection", async (socket) => {
     });
     socket.on("disconnect", async () => {
         try {
-            await setTimeout(() => {
+            setTimeout(() => {
                 const count = io.engine.clientsCount;
                 io.emit("current users count", count);
             }, 1000);
