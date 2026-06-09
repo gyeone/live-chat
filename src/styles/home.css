@@ -1,0 +1,31 @@
+body {
+    align-items: center;
+}
+
+.home {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+}
+
+.home-contents {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 24px;
+    text-align: center;
+    min-width: 300px;
+}
+
+.home-contents > h2 {
+    font-size: 24px;
+}
+
+.home-contents > p {
+    font-size: 20px;
+}
+
+.home-hidden {
+    display: none;
+}

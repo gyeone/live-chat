@@ -7,11 +7,11 @@ import SecretRoomPw from "./secretRoomPw";
 import defaultImg from "../assets/images/default_img.png";
 import baekchatLogo from "../assets/images/baekchat-logo.png";
 
-function ChatList() {
+function ChatList({ setIsChatRoom }) {
     const [nickname, setNickname] = useState("");
+    const [profile, setProfile] = useState();
     const [count, setCount] = useState(0);
     const [userList, setUserList] = useState([]);
-    const [messages, setMessages] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectRoom, setSelectRoom] = useState("");
@@ -24,9 +24,8 @@ function ChatList() {
         const nickname = sessionStorage.getItem("nickname");
         setNickname(nickname);
 
-        if (!nickname) {
-            navigate("/");
-            return;
+        if (nickname) {
+            socket.emit("get profile img", nickname);
         }
 
         socket.on("current users", (userList) => {
@@ -45,6 +44,7 @@ function ChatList() {
             setIsPwModalOpen(isSecretRoom);
             if (isSecretRoom === false) {
                 setIsChatRoomOpen(true);
+                setIsChatRoom(true);
             }
         });
 
@@ -52,6 +52,7 @@ function ChatList() {
             socket.off("current users count");
             socket.off("current users");
             socket.off("rooms content");
+            socket.off("is secret room");
         };
     }, []);
 
@@ -122,6 +123,7 @@ function ChatList() {
                     nickname={nickname}
                     roomName={selectRoom}
                     setIsChatRoomOpen={() => setIsChatRoomOpen(false)}
+                    setIsChatRoom={setIsChatRoom}
                 />
             )}
         </>

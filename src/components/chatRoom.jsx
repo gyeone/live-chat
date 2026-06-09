@@ -5,12 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import defaultImg from "../assets/images/default_img.png";
 
-function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
+function ChatRoom({ nickname, roomName, setIsChatRoomOpen, setIsChatRoom }) {
     const [inputMsg, setInputMsg] = useState("");
     const [messages, setMessages] = useState([]);
     const [allalert, setAllAlert] = useState("");
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         socket.emit("join", { roomName: roomName, nickname: nickname });
@@ -43,6 +41,7 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
 
     const handleClose = () => {
         setIsChatRoomOpen();
+        setIsChatRoom(false);
     };
 
     const handleSubmit = (e) => {
@@ -60,7 +59,7 @@ function ChatRoom({ nickname, roomName, setIsChatRoomOpen }) {
 
     return (
         <>
-            <section id="chatRoom">
+            <section className="chatRoom">
                 <div className="chatRoom-header">
                     <button type="button" onClick={handleClose}>
                         닫기
