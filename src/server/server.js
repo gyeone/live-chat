@@ -3,6 +3,10 @@ import pg from "pg";
 import cors from "cors";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import fs from "fs";
+import path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -33,6 +37,11 @@ app.use(
         optionsSuccessStatus: 200,
     }),
 );
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const filesPath = path.join(__dirname, "files");
+app.use("/files", express.static(filesPath));
 
 io.on("connection", async (socket) => {
     console.log("클라이언트 연결됨");
@@ -292,15 +301,74 @@ io.on("connection", async (socket) => {
                 [nickname],
             );
 
-            if (result.rows.length > 0) {
-                setTimeout(() => {
-                    socket.emit("profile img", result.rows[0].profile_img);
-                }, 1000);
+            if (result.rows.length === 0) {
+                return;
             }
+
+            socket.emit("profile img", result.rows[0].profile_img);
         } catch (e) {
             console.log("기존 프로필 이미지 가져오기 실패", e.message);
         }
     });
+
+    // 프로필 이미지 업로드
+    socket.on(
+        "upload profile img",
+        async ({ nickname, fileName, fileData }) => {
+            try {
+                const oldProfile = await db.query(
+                    "SELECT profile_img FROM users WHERE nickname = $1",
+                    [nickname],
+                );
+
+                if (
+                    oldProfile.rows.length > 0 &&
+                    oldProfile.rows[0].profile_img
+                ) {
+                    const oldImgPath = path.join(
+                        __dirname,
+                        "files",
+                        path.basename(oldProfile.rows[0].profile_img),
+                    );
+
+                    if (fs.existsSync(oldImgPath)) {
+                        fs.unlinkSync(oldImgPath);
+
+                        console.log("기존 프로필 삭제 완료");
+                    }
+                }
+
+                if (!fs.existsSync(filesPath)) {
+                    fs.mkdirSync(filesPath);
+                }
+
+                const userId = await db.query(
+                    "SELECT id FROM users WHERE nickname = $1",
+                    [nickname],
+                );
+
+                const userIdValue = userId.rows[0].id;
+
+                const uniqueFileName = `${Date.now()}_${userIdValue}_${fileName}`;
+
+                const savePath = path.join(filesPath, uniqueFileName);
+
+                fs.writeFileSync(savePath, Buffer.from(fileData));
+
+                const imgUrl = `/files/${uniqueFileName}`;
+
+                await db.query(
+                    "UPDATE users SET profile_img = $1 WHERE nickname = $2",
+                    [imgUrl, nickname],
+                );
+
+                socket.emit("profile img", imgUrl);
+            } catch (e) {
+                console.log("파일 저장 실패:", e.message);
+            }
+        },
+    );
+
     socket.on("disconnect", async () => {
         try {
             await sendCurrentUsersCount();
