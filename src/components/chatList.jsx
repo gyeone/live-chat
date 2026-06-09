@@ -4,6 +4,8 @@ import CreateRoom from "./createRoom";
 import { useNavigate } from "react-router-dom";
 import ChatRoom from "./chatRoom";
 import SecretRoomPw from "./secretRoomPw";
+import defaultImg from "../assets/images/default_img.png";
+import baekchatLogo from "../assets/images/baekchat-logo.png";
 
 function ChatList() {
     const [nickname, setNickname] = useState("");
