@@ -24,6 +24,7 @@ DB: PostgreSQL
 - pg (기능이 많고 복잡한 쿼리에 강한 db)
 - socket.io (서버용 실시간 통신 관리)
 - socket.io-client (클라이언트용 실시간 통신 관리)
+- react-icons (아이콘 디자인)
 
 ## 1단계 페이지별 구현할 기능
 
@@ -39,16 +40,17 @@ DB: PostgreSQL
 - 닉네임이 담긴 로그인 입장 메시지 💛💛
 - 현재 접속자 수 표시 💛💛
 - 현재 접속자 닉네임 리스트 표시 (현재 닉네임 안나옴) 💛💛
-- 현재 접속자 닉네임 리스트 접속자 퇴장 시 반영되게 하기 (현재 온라인 상태가 false로 바뀌지 않음) 💔💔
+- 현재 접속자 닉네임 리스트 접속자 퇴장 시 반영되게 하기 (온라인 상태를 false로 변경하기) 💔💔
 - 방이 이미 존재한다면 db에서 방이름, 가장 최근 메시지, 최근 메세지의 시간 보여주기 💛💛
 - 방 만들기 버튼 클릭 시 모달 창 열고 닫기 기능 💛💛
 - 방 만들기 기능 (방 이름 설정 가능, 중복 불가) 💛💛
 - 방 리스트 클릭 시 socket으로 해당 방 입장 (chatRoom 페이지로 이동)💛💛
 - 방 입장 퇴장 전체에게 알림 💛💛
+- 로그인 상태가 아닌 경우 로그인페이지로 이동 기능 구현 💛💛
 
 3. chatRoom
 
-- 이전 버튼으로 chatList 페이지로 이동 💛💛
+- 이전 버튼으로 chatList 페이지로 이동(닫기 버튼으로 변경함) 💛💛
 - db에서 이전 메세지 불러오기(시간도 함께) 💛💛
 - 메시지 입력란과 전송버튼 기능 💛💛
 - 입력한 메시지 db에 저장 후 socket으로 채팅방 리스트에 바로 보여주기 (시간도 함께) 💛💛
@@ -62,7 +64,7 @@ DB: PostgreSQL
 - 로그인페이지에서 아이디 또는 비번이 빈값일 경우 알림 띄우기 💛💛
 - 로그인페이지에 비번 input 태그 추가, 닉네임과 같이 db에 넘겨주고 비교하기 💛💛
 - 로그인페이지에서 아이디 또는 비번 불일치시 알림 띄우기 💛💛
-- 회원가입 페이지 구현💛💛
+- 회원가입 페이지 생성💛💛
 - 회원가입 페이지에서 로그인 버튼 구현(클릭 시 로그인페이지로 이동) 💛💛
 - 회원가입 페이지에서 아이디 또는 비번이 빈값일 경우 알림 띄우기 💛💛
 - 회원가입 페이지에서 아이디와 비번 받고 db에 저장 💛💛
@@ -71,32 +73,56 @@ DB: PostgreSQL
 
 2. 프로필 사진 구현
 
-- 마이페이지 페이지 구현
-- 내 이름과 프로필사진 넣기
-- 프로필사진 사진 넣고 수정할 수 있도록 구현
-- 마이페이지 이전 버튼 구현
+- 마이페이지 페이지 생성 💛💛
+- 닉네임 세션스토리지에서 가져와 보여주기 💛💛
+- 채팅리스트에서 마이페이지 버튼 클릭 시 마이페이지로 이동 기능 구현 💛💛
+- 마이페이지 이전 버튼 구현 💛💛
+- 마이페이지 이동 시 로그인 상태가 아닌 경우 로그인페이지로 이동 기능 구현 💛💛
+- users 테이블에 profile_img column 추가 💛💛
+- 프로필사진 사진 넣고 수정할 수 있도록 구현 💛💛
+- messages 테이블에 user_profile column 추가 💛💛
+- 채팅방에서 입력한 채팅 메시지 db로 저장 할 때 입력한 사용자의 프로필 이미지 데이터도 함께 저장 💛💛
+- 채팅방에서 채팅 내용 옆에 프로필 사진도 같이 보여주기 💛💛
+- 마이페이지와 채팅방 페이지 : db에서 user_profile 값 가져오기, 사용자가 설정한 이미지가 없을 경우 기본 이미지로 지정 💛💛
 
 3. 귓속말(개인DM) 구현
 
 4. 비밀 방 구현
 
-- 비밀번호 설정 버튼 구현
-- rooms 테이블에 비밀번호 column 추가(기본값은 )
-- 비밀번호 선택 후 방 만들 시 비밀번호 값 보내기
-- 비밀번호 입력 모달 component 생성하기
-- 방 클릭 시 비밀번호 모달 띄우기
-- 비밀번호 입력 후 제출 시 db 값에 비교하기
+- rooms 테이블에 pw column 추가 💛💛
+- 비밀방 버튼 html 구현 💛💛
+- 비밀방 버튼 체크 여부 state 설정 💛💛
+- 비밀번호 입력값 state로 저장 💛💛
+- db에 비밀번호 값 보내고 저장 💛💛
+- 비밀방 클릭 시 띄울 비밀번호 입력 모달 component 생성하기 💛💛
+- 비밀번호 입력 모달 닫기 기능 구현(props로 받아와 적용) 💛💛
+- 비밀방 클릭할 경우 db에 비밀번호 존재 여부 확인 후 비밀번호 입력 모달 띄우기 💛💛
+- 비밀번호 입력 후 제출 시 db 값에 비교한 뒤 채팅방 입장 💛💛
+- 채팅 리스트에서 비밀방은 채팅 내용과 시간을 보여주지 않기 💛💛
 
-5. css 구현(애니메이션)
+5. css 구현
 
 - 채팅방 클릭 시 채팅방 오른쪽에서 스르륵 나오도록 구현(닫을 때도 스르륵)
+- 채팅 리스트에서 비밀방은 방 이름과 옆에 비밀방 아이콘으로 표시하기
+- 로고 만들기, 파비콘 설정 💛💛
+- 폰트 적용 💛💛
+- 채팅방이 열렸을 때 홈페이지는 사라지고 채팅방 css는 홈페이지와 동일하게 적용 되도록 설정 💛💛
 
 6. 레이아웃 설정
 
-- 채팅방 리스트에서 채팅방 클릭 시 오른쪽에 채팅방 보여지기
-- 채팅방에 이전 버튼 기능 구현
+- layout 죄측(환영인사, 접속자 수, 접속자 목록, 채팅방 목록), 우측(홈페이지, 채팅방)
 - chatRoom을 pages에서 components폴더로 이동(컴포넌트로 변경) 💛💛
-- layout 상단(환영인사, 접속자 수, 접속자 목록) 좌측(채팅방 목록) 우측(대화창)
+- chatList에서 채팅방 클릭 시 채팅방 띄어지도록 연결하고 props 넘겨주기 💛💛
+- 채팅방에 닫기 버튼 기능 구현(이전 버튼 삭제) 💛💛
+- home.jsx 기본 페이지 구현, chatList.jsx를 페이지에서 컴포넌트로 변경 💛💛
+- 채팅방 클릭 시 홈페이지에 홈페이지 내용은 사라지고 채팅방 내용만 보여지기(props로 상태확인 후 기능 적용) 💛💛
+
+7. 추후 추가하면 좋을 기능
+
+- 홈페이지에 인사말 랜덤으로 여러개 보여주기💛💛
+- 채팅리스트 채팅방 순서는 최근 채팅 기준
+- chatList -> sideBar로 이름 변경
+- myPage -> mypage로 이름 변경
 
 ## 개발 시 주요사항
 
@@ -172,6 +198,7 @@ io.on("connection", function (socket) {
 ## 기간
 
 - 1단계(기본 html 구조, 서버 연결, db 테이블, 기능 구현): 2026.05.04 - 2026.05.19
+- 2단계(추가 기능 구현, 레이아웃 설정, css 적용): - 2026.05.31
 
 ## 3. 데이터베이스 테이블 쿼리문
 
@@ -179,8 +206,10 @@ io.on("connection", function (socket) {
    sql문
    CREATE TABLE IF NOT EXISTS users (
    id SERIAL PRIMARY KEY,
-   nickname VARCHAR(20) NOT NULL UNIQUE
-   pw VARCHAR(20) NOT NULL
+   nickname VARCHAR(20) NOT NULL UNIQUE,
+   is_online boolean NOT NULL,
+   pw VARCHAR(20) NOT NULL,
+   profile_img VARCHAR
    );
 
 2. rooms 테이블
@@ -190,13 +219,15 @@ io.on("connection", function (socket) {
    room_name VARCHAR(50) NOT NULL,
    created_by VARCHAR(20) REFERENCES users(nickname) NOT NULL,
    created_at TIMESTAMP DEFAULT NOW() NOT NULL
+   pw VARCHAR
    );
 
 3. messages 테이블
    CREATE TABLE IF NOT EXISTS messages (
    id SERIAL PRIMARY KEY,
    content TEXT NOT NULL,
+   created_at TIMESTAMP DEFAULT NOW() NOT NULL,
    user_name VARCHAR(20) REFERENCES users(nickname) NOT NULL,
    room_name VARCHAR(50) REFERENCES rooms(room_name) NOT NULL,
-   created_at TIMESTAMP DEFAULT NOW() NOT NULL
+   user_profile VARCHAR
    );
