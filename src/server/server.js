@@ -132,24 +132,31 @@ io.on("connection", async (socket) => {
     // 생성된 각 채팅방과 해당 채팅방의 최신 메시지와 시간 가져오기
     async function sendRoomsContent() {
         try {
-            console.log("sendRoomsContent 실행");
-            const rooms = await db.query(
-                "SELECT * FROM rooms ORDER BY created_at DESC",
-            );
+            const result = await db.query(`
+                SELECT
+                    r.*,
+                    m.content,
+                    TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI') AS message_time
+                FROM rooms r
+                LEFT JOIN LATERAL (
+                    SELECT content, created_at
+                    FROM messages
+                    WHERE room_name = r.room_name
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                ) m ON true
+                ORDER BY r.created_at DESC
+        `);
 
-            const roomsContent = await Promise.all(
-                rooms.rows.map(async (room) => {
-                    const content = await db.query(
-                        "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI') AS created_at FROM messages WHERE room_name = $1 ORDER BY id DESC LIMIT 1",
-                        [room.room_name],
-                    );
-
-                    return {
-                        ...room,
-                        roomContent: content.rows[0] || null,
-                    };
-                }),
-            );
+            const roomsContent = result.rows.map((room) => ({
+                ...room,
+                roomContent: room.content
+                    ? {
+                          content: room.content,
+                          created_at: room.message_time,
+                      }
+                    : null,
+            }));
 
             io.emit("rooms content", roomsContent);
         } catch (e) {
@@ -195,7 +202,7 @@ io.on("connection", async (socket) => {
             );
             console.log(result.rows);
 
-            if (!result.rows[0].pw) {
+            if (result.rows.length === 0 || !result.rows[0].pw) {
                 socket.emit("is secret room", false);
                 return;
             }
