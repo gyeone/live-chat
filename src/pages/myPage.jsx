@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 import defaultImg from "../assets/images/default_img.png";
+import { IoIosArrowBack } from "react-icons/io";
+import { PiPlusCircleFill } from "react-icons/pi";
+import "../styles/myPage.css";
 
 function MyPage() {
     const [nickname, setNickname] = useState("");
@@ -73,23 +76,24 @@ function MyPage() {
     return (
         <section className="myPage">
             <button type="button" onClick={toPrevPage}>
-                이전
+                <IoIosArrowBack className="mypage-icon" />
             </button>
-            <h2>{nickname}</h2>
-
-            <div>
+            <div className="mypage-info">
                 <img
-                    id="myPage-profile-img"
+                    id="mypage-profile-img"
                     src={profile ? profile : defaultImg}
                     alt="프로필사진"
                 />
-                <label htmlFor="profilefile">+</label>
+                <label htmlFor="profilefile">
+                    <PiPlusCircleFill className="mypage-icon" />
+                </label>
                 <input
                     id="profilefile"
                     type="file"
                     accept="image/*"
                     onChange={handleProfile}
                 />
+                <h2 id="mypage-nickname">{nickname}</h2>
             </div>
         </section>
     );
