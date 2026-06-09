@@ -36,24 +36,25 @@ app.use(
 
 io.on("connection", async (socket) => {
     console.log("클라이언트 연결됨");
+
+    await sendCurrentUsersCount();
+    await sendCurrentUsers();
+    await sendRoomsContent();
+
     // 로그인 - 닉네임과 비번 저장 후 온라인 상태로 변경
     socket.on("nickname", async ({ nickname, password }) => {
         try {
-            const dbNickname = await db.query(
-                "SELECT nickname FROM users WHERE nickname = $1",
+            const result = await db.query(
+                "SELECT * FROM users WHERE nickname = $1",
                 [nickname],
             );
 
-            const dbpw = await db.query("SELECT pw FROM users WHERE pw = $1", [
-                password,
-            ]);
-
-            if (dbNickname.rows.length === 0) {
+            if (result.rows.length === 0) {
                 socket.emit("login id fail", "가입되지 않은 아이디입니다");
                 return;
             }
 
-            if (dbNickname.rows.length > 0 && dbpw.rows.length === 0) {
+            if (result.rows[0].pw !== password) {
                 socket.emit("login pw fail", "비밀번호가 일치하지 않습니다");
                 return;
             }
@@ -62,6 +63,9 @@ io.on("connection", async (socket) => {
                 "UPDATE users SET is_online = true WHERE nickname = $1",
                 [nickname],
             );
+
+            await sendCurrentUsersCount();
+            await sendCurrentUsers();
 
             io.emit("welcome", nickname);
         } catch (e) {
@@ -94,52 +98,54 @@ io.on("connection", async (socket) => {
     });
 
     //현재 접속자 수 불러오기
-    try {
-        setTimeout(() => {
+    async function sendCurrentUsersCount() {
+        try {
             const count = io.engine.clientsCount;
             io.emit("current users count", count);
-        }, 1000);
-    } catch (e) {
-        console.log("현재 접속자 수 불러오기 실패", e.message);
+        } catch (e) {
+            console.log("현재 접속자 수 불러오기 실패", e.message);
+        }
     }
 
     // 현재 접속자 목록 불러오기
-    try {
-        const result = await db.query(
-            "SELECT nickname FROM users WHERE is_online = true",
-        );
+    async function sendCurrentUsers() {
+        try {
+            const result = await db.query(
+                "SELECT nickname FROM users WHERE is_online = true",
+            );
 
-        setTimeout(() => {
             io.emit("current users", result.rows);
-        }, 1000);
-    } catch (e) {
-        console.log("현재 접속자 불러오기 실패", e.message);
+        } catch (e) {
+            console.log("현재 접속자 불러오기 실패", e.message);
+        }
     }
 
     // 생성된 각 채팅방과 해당 채팅방의 최신 메시지와 시간 가져오기
-    try {
-        const rooms = await db.query(
-            "SELECT * FROM rooms ORDER BY created_at DESC",
-        );
+    async function sendRoomsContent() {
+        try {
+            console.log("sendRoomsContent 실행");
+            const rooms = await db.query(
+                "SELECT * FROM rooms ORDER BY created_at DESC",
+            );
 
-        const roomsContent = await Promise.all(
-            rooms.rows.map(async (room) => {
-                const content = await db.query(
-                    "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at FROM messages WHERE room_name = $1 ORDER BY created_at DESC LIMIT 1",
-                    [room.room_name],
-                );
+            const roomsContent = await Promise.all(
+                rooms.rows.map(async (room) => {
+                    const content = await db.query(
+                        "SELECT content, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI') AS created_at FROM messages WHERE room_name = $1 ORDER BY id DESC LIMIT 1",
+                        [room.room_name],
+                    );
 
-                return {
-                    ...room,
-                    roomContent: content.rows[0] || "",
-                };
-            }),
-        );
-        setTimeout(() => {
+                    return {
+                        ...room,
+                        roomContent: content.rows[0] || null,
+                    };
+                }),
+            );
+
             io.emit("rooms content", roomsContent);
-        }, 1000);
-    } catch (e) {
-        console.log("모든 채팅방 불러오기 실패", e.message);
+        } catch (e) {
+            console.log("모든 채팅방 불러오기 실패", e.message);
+        }
     }
 
     // 방 새로 만들기
@@ -165,6 +171,7 @@ io.on("connection", async (socket) => {
                 "create room success",
                 `새로운 "${roomName}" 방이 생겼습니다`,
             );
+            await sendRoomsContent();
         } catch (e) {
             console.log("방 만들기 실패", e.message);
         }
@@ -271,6 +278,7 @@ io.on("connection", async (socket) => {
                 console.log("유저 프로필", chatMsg.rows[0]);
                 io.to(roomName).emit("chat message", chatMsg.rows[0]);
             }, 1000);
+            await sendRoomsContent();
         } catch (e) {
             console.log("메시지 저장 실패", e.message);
         }
@@ -295,12 +303,10 @@ io.on("connection", async (socket) => {
     });
     socket.on("disconnect", async () => {
         try {
-            setTimeout(() => {
-                const count = io.engine.clientsCount;
-                io.emit("current users count", count);
-            }, 1000);
+            await sendCurrentUsersCount();
+            await sendCurrentUsers();
         } catch (e) {
-            console.log("현재 접속자 수 불러오기 실패", e.message);
+            console.log(e.message);
         }
 
         // try {
