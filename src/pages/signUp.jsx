@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
+import "../styles/login&signUp.css";
 
 function SignUp() {
     const [nickname, setNickname] = useState("");
@@ -15,7 +16,7 @@ function SignUp() {
 
         socket.on("signUp success", (msg) => {
             alert(msg);
-            navigate("/");
+            navigate("/login");
             return;
         });
 
@@ -38,7 +39,7 @@ function SignUp() {
 
     return (
         <section className="signUp">
-            <h2>회원가입</h2>
+            <h2 id="signUp-title">회원가입</h2>
             <form id="signUp-form" onSubmit={handleSubmit}>
                 <input
                     id="nickname"
@@ -46,7 +47,7 @@ function SignUp() {
                     value={nickname}
                     maxLength={20}
                     onChange={(e) => setNickname(e.target.value.trim())}
-                    placeholder="20자 이내의 닉네임을 입력하세요"
+                    placeholder="20자 이내의 닉네임"
                 />
                 <input
                     id="password"
@@ -54,11 +55,11 @@ function SignUp() {
                     value={password}
                     maxLength={20}
                     onChange={(e) => setPassword(e.target.value.trim())}
-                    placeholder="20자 이내의 비밀번호를 입력하세요"
+                    placeholder="20자 이내의 비밀번호"
                 />
                 <button>회원가입</button>
             </form>
-            <button type="button" onClick={() => navigate("/")}>
+            <button type="button" onClick={() => navigate("/login")}>
                 로그인
             </button>
         </section>

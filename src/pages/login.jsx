@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
+import "../styles/login&signUp.css";
 
 function Login() {
     const [nickname, setNickname] = useState("");
@@ -8,9 +9,15 @@ function Login() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const nickname = sessionStorage.getItem("nickname");
+
+        if (nickname) {
+            setNickname(nickname);
+            navigate("/");
+        }
         socket.on("welcome", (nickname) => {
             sessionStorage.setItem("nickname", nickname);
-            navigate("/chatList");
+            navigate("/");
             window.location.reload();
         });
 
@@ -44,7 +51,7 @@ function Login() {
     };
     return (
         <section className="login">
-            <h2>닉네임을 입력해주세요</h2>
+            <h2 id="login-title">로그인하고 채팅을 시작해요</h2>
             <form id="nickname-form" onSubmit={handleSubmit}>
                 <input
                     id="nickname"
@@ -52,7 +59,7 @@ function Login() {
                     value={nickname}
                     maxLength={20}
                     onChange={(e) => setNickname(e.target.value.trim())}
-                    placeholder="20자 이내의 닉네임을 입력하세요"
+                    placeholder="20자 이내의 닉네임"
                 />
                 <input
                     id="password"
@@ -60,7 +67,7 @@ function Login() {
                     value={password}
                     maxLength={20}
                     onChange={(e) => setPassword(e.target.value.trim())}
-                    placeholder="20자 이내의 비밀번호를 입력하세요"
+                    placeholder="20자 이내의 비밀번호"
                 />
                 <button>입장</button>
             </form>

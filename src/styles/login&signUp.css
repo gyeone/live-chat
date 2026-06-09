@@ -1,0 +1,40 @@
+.login,
+.signUp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    width: 300px;
+}
+
+#nickname-form,
+#signUp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#login-title,
+#signUp-title {
+    font-size: 20px;
+}
+
+form > input,
+.login button,
+.signUp button {
+    width: 270px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+form > input {
+    padding: 12px;
+    border-color: #dfdfdf;
+}
+
+.login button,
+.signUp button {
+    background-color: #252525;
+    color: white;
+}
