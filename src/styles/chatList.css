@@ -1,0 +1,135 @@
+.chatList {
+    position: relative;
+    width: 260px;
+    height: 100vh;
+    padding: 12px 12px;
+    font-size: 16px;
+    border-right: 1px solid #dfdfdf;
+    overflow: hidden;
+    /* transition: width 0.5s ease-in-out; */
+}
+
+.close {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 60px;
+    padding: 12px 0 0;
+}
+
+.close .chatList-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.close .online-count {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 4px;
+}
+
+.chatList-hidden {
+    display: none;
+}
+
+.logo {
+    width: 28px;
+    height: 28px;
+}
+
+.chatList-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+    margin-bottom: 20px;
+}
+
+.current-users {
+}
+
+.chatList-contents {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.chatlist-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chatList-contents > button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.chatList-rooms,
+.rooms,
+.room {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.room {
+    gap: 4px;
+}
+
+.room > p {
+    font-weight: 400;
+}
+
+.room-content {
+    font-size: 14px;
+    padding-left: 4px;
+}
+
+#room-content-chat {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.chatList-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 20px 12px;
+    width: 100%;
+}
+
+.chatList-footer > button {
+    font-size: 14px;
+    border: 1px solid #dfdfdf;
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+.chatlist-menu > p {
+    font-weight: 400;
+}
+
+#my-profile-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+}
+
+.chatList-icon {
+    width: 20px;
+    height: 20px;
+    color: #252525;
+}
