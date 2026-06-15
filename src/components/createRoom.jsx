@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import socket from "../socket";
-import "../styles/createRoom.css";
+import "../styles/create&secretRoom.css";
 import { FiUnlock } from "react-icons/fi";
 import { FiLock } from "react-icons/fi";
 
@@ -58,7 +58,7 @@ function CreateRoom({ onClose }) {
                 >
                     닫기
                 </button>
-                <form id="roomName-form" onSubmit={handleSubmit}>
+                <form id="createRoom-form" onSubmit={handleSubmit}>
                     <input
                         id="roomName"
                         type="text"

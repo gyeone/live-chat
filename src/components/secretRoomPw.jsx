@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import socket from "../socket";
+import "../styles/create&secretRoom.css";
 
 function SecretRoomPw({ onClose, roomName, setIsChatRoomOpen }) {
     const [roomPw, setRoomPw] = useState("");
@@ -34,12 +35,19 @@ function SecretRoomPw({ onClose, roomName, setIsChatRoomOpen }) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div
+                className="secretRoom-modal-content"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <h3> 비밀번호 입력</h3>
-                <button type="button" onClick={onClose}>
+                <button
+                    id="secretRoom-modal-close"
+                    type="button"
+                    onClick={onClose}
+                >
                     닫기
                 </button>
-                <form id="roomName-form" onSubmit={handleSubmit}>
+                <form id="secretRoom-form" onSubmit={handleSubmit}>
                     <input
                         id="roomPw"
                         type="text"
@@ -49,7 +57,7 @@ function SecretRoomPw({ onClose, roomName, setIsChatRoomOpen }) {
                         placeholder="10자 이내의 비밀번호를 입력하세요"
                     />
 
-                    <button>입장</button>
+                    <button id="secretRoom-success">입장</button>
                 </form>
             </div>
         </div>
