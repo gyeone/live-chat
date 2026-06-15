@@ -102,6 +102,17 @@ function ChatList({ setIsChatRoom }) {
                     <RxPencil2 className="chatList-icon" />
                 </button>
                 <RiChat3Line className="chatList-icon" />
+                <button
+                    id="chatList-close-profile"
+                    type="button"
+                    onClick={() => navigate("/myPage")}
+                >
+                    <img
+                        id="my-profile-img"
+                        src={profile ? profile : defaultImg}
+                        alt="프로필사진"
+                    />
+                </button>
             </section>
             <section
                 className={`chatList ${issideBarOpen ? "" : "chatList-hidden"} `}
