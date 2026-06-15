@@ -82,7 +82,13 @@
     gap: 4px;
 }
 
-.room > p {
+.room-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.room-title p {
     font-weight: 400;
 }
 
@@ -131,5 +137,11 @@
 .chatList-icon {
     width: 20px;
     height: 20px;
+    color: #252525;
+}
+
+.chatList-secretRoom-icon {
+    width: 16px;
+    height: 16px;
     color: #252525;
 }

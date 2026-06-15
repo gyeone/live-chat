@@ -11,6 +11,7 @@ import { RiRadioButtonLine } from "react-icons/ri";
 import { PiUserList } from "react-icons/pi";
 import { RxPencil2 } from "react-icons/rx";
 import { RiChat3Line } from "react-icons/ri";
+import { FiLock } from "react-icons/fi";
 import "../styles/chatList.css";
 
 function ChatList({ setIsChatRoom }) {
@@ -145,7 +146,12 @@ function ChatList({ setIsChatRoom }) {
                                 key={room.room_name}
                                 onClick={() => handleChatRoom(room.room_name)}
                             >
-                                <p>{room.room_name}</p>
+                                <div className="room-title">
+                                    {room.pw && (
+                                        <FiLock className="chatList-secretRoom-icon" />
+                                    )}
+                                    <p>{room.room_name}</p>
+                                </div>
                                 {!room.pw && (
                                     <div className="room-content">
                                         <p id="room-content-chat">
