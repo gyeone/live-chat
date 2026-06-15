@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import socket from "../socket";
 import "../styles/createRoom.css";
+import { FiUnlock } from "react-icons/fi";
+import { FiLock } from "react-icons/fi";
 
 function CreateRoom({ onClose }) {
     const [roomName, setRoomName] = useState("");
@@ -44,9 +46,16 @@ function CreateRoom({ onClose }) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div
+                className="createRoom-modal-content"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <h3>방 만들기</h3>
-                <button type="button" onClick={onClose}>
+                <button
+                    id="createRoom-modal-close"
+                    type="button"
+                    onClick={onClose}
+                >
                     닫기
                 </button>
                 <form id="roomName-form" onSubmit={handleSubmit}>
@@ -58,16 +67,6 @@ function CreateRoom({ onClose }) {
                         onChange={(e) => setRoomName(e.target.value.trim())}
                         placeholder="50자 이내의 방 이름을 입력하세요"
                     />
-
-                    <label htmlFor="isScret">
-                        <input
-                            id="isScret"
-                            type="checkbox"
-                            checked={isSecret}
-                            onChange={handleIsSecret}
-                        />
-                        비밀방
-                    </label>
                     {isSecret && (
                         <input
                             id="roomPw"
@@ -78,7 +77,23 @@ function CreateRoom({ onClose }) {
                             placeholder="10자 이내의 비밀번호를 입력하세요"
                         />
                     )}
-                    <button>완료</button>
+
+                    <label htmlFor="isScret">
+                        {isSecret ? (
+                            <FiLock id="isScret-icon" />
+                        ) : (
+                            <FiUnlock id="isScret-icon" />
+                        )}
+                        <input
+                            id="isScret"
+                            type="checkbox"
+                            checked={isSecret}
+                            onChange={handleIsSecret}
+                        />
+                        <p>비밀방</p>
+                    </label>
+
+                    <button id="createRoom-success">완료</button>
                 </form>
             </div>
         </div>

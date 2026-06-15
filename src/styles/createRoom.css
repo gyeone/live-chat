@@ -11,9 +11,68 @@
     z-index: 100;
 }
 
-.modal-content {
+.createRoom-modal-content {
+    position: relative;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 280px;
+}
+
+.createRoom-modal-content > h3 {
+    margin-top: 15px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+#createRoom-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+#roomName-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin: 15px 0;
+}
+
+#roomName,
+#roomPw,
+#createRoom-success {
+    width: 100%;
+}
+
+#roomName-form > label {
+    display: flex;
+    align-items: center;
+    margin-left: 4px;
+    gap: 4px;
+    font-size: 15px;
+}
+
+#roomName-form > label > input {
+    display: none;
+}
+
+#isScret-icon {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+}
+
+#roomName-form > label > p {
+    font-weight: 400;
+}
+
+#createRoom-success {
+    margin-top: 20px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 14px;
+    background-color: #252525;
+    color: white;
 }
